@@ -42,7 +42,12 @@ def train_and_evaluate_model(model, x_train, y_train, x_val, y_val, x_test, y_te
     
     callbacks = [
         EarlyStopping(monitor='val_loss', patience=3, verbose=1),
-        ModelCheckpoint('best_model.h5', save_best_only=True, verbose=1)
+        ModelCheckpoint(
+                            filepath='./models/best_model.h5',
+                            save_best_only=True,
+                            monitor='val_loss',
+                            mode='min'
+                        )
     ]
     
     history = model.fit(
