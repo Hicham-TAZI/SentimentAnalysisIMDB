@@ -1,31 +1,21 @@
-import pandas as pd
-import numpy as np
-import re
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
-from tensorflow.keras.preprocessing.text import Tokenizer
+# src/data_preprocessing.py
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
-# Ensure you have downloaded the necessary NLTK data with nltk.download('stopwords') and nltk.download('wordnet')
+def preprocess_data(x_data, y_data, max_length=500, padding_type='post'):
+    """
+    Preprocesses the IMDB data for training.
 
-def clean_text(text):
-    """Function to clean text by removing punctuation, stopwords, and performing lemmatization."""
-    text = text.lower()  # Lowercase text
-    text = re.sub(r'[^\w\s]', '', text)  # Remove punctuation
-    words = text.split()  # Split into words
-    words = [word for word in words if word not in stopwords.words('english')]  # Remove stopwords
-    lemmatizer = WordNetLemmatizer()
-    words = [lemmatizer.lemmatize(word) for word in words]  # Lemmatize words
-    return ' '.join(words)
+    Args:
+    - x_data (numpy.ndarray): The input features, already tokenized and indexed.
+    - y_data (numpy.ndarray): The labels.
+    - max_length (int): Maximum length of sequences after padding.
+    - padding_type (str): Type of padding to apply ('pre' or 'post').
 
-def preprocess_data(filepath, vocab_size=10000, max_length=500, padding_type='post', truncating_type='post'):
-    """Load data from a CSV file, clean, and tokenize text."""
-    df = pd.read_csv(filepath)
-    df['cleaned_text'] = df['review'].apply(clean_text)
+    Returns:
+    - x_padded (numpy.ndarray): Padded sequences of input features.
+    - y_data (numpy.ndarray): Unmodified labels.
+    """
+    # Assuming the sequences might not already be padded to max_length
+    x_padded = pad_sequences(x_data, maxlen=max_length, padding=padding_type, truncating=padding_type)
     
-    tokenizer = Tokenizer(num_words=vocab_size, oov_token="<OOV>")
-    tokenizer.fit_on_texts(df['cleaned_text'])
-    sequences = tokenizer.texts_to_sequences(df['cleaned_text'])
-    padded_sequences = pad_sequences(sequences, maxlen=max_length, padding=padding_type, truncating=truncating_type)
-    
-    return padded_sequences, df['sentiment'].values, tokenizer
+    return x_padded, y_data
