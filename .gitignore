@@ -3,3 +3,4 @@ __pycache__/
 .DS_Store  # For macOS users
 *.pyc
 src/models/
+deeplearning/
