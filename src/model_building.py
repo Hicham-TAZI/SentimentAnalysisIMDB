@@ -39,17 +39,15 @@ def create_model(model_type='LSTM', vocab_size=10000, embedding_dim=100, max_len
 def train_and_evaluate_model(model, x_train, y_train, x_val, y_val, x_test, y_test, epochs=10, batch_size=64):
     """Train the model and evaluate it on the test set with enhanced logging."""
     logging.info("Starting model training...")
-
-    # Directory for saving models
-    model_dir = './src/models'
-    if not os.path.exists(model_dir):
-        os.makedirs(model_dir)
-
-    model_path = os.path.join(model_dir, 'best_model.h5')
     
     callbacks = [
         EarlyStopping(monitor='val_loss', patience=3, verbose=1),
-        ModelCheckpoint(model_path, save_best_only=True, verbose=1)
+        ModelCheckpoint(
+                            filepath='./models/best_model.h5',
+                            save_best_only=True,
+                            monitor='val_loss',
+                            mode='min'
+                        )
     ]
     
     history = model.fit(

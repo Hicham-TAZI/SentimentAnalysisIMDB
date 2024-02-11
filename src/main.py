@@ -1,9 +1,10 @@
 import argparse
 import logging
 import json
-import numpy as np
+import os
 from tensorflow.keras.datasets import imdb
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.models import load_model
 from sklearn.model_selection import train_test_split
 import exploratory_data_analysis as eda
 import model_building
@@ -71,12 +72,17 @@ def main():
 
 
     elif args.action == 'evaluate':
-        logging.info("Evaluating the best model...")
-        # Load the best model. This requires you to have saved the best model during training.
-        # For demonstration, we'll assume the best model is already loaded as `best_model`.
-        # In practice, you'd load the model using `tf.keras.models.load_model('path/to/model')`.
-        test_loss, test_accuracy = best_model.evaluate(x_test, y_test, verbose=1)
-        logging.info(f"Test Loss: {test_loss}, Test Accuracy: {test_accuracy}")
+        model_path = './models/best_model.h5'  # Updated path
+
+        if os.path.exists(model_path):
+            logging.info("Loading the best model from the models directory for evaluation...")
+            best_model = load_model(model_path)
+            
+            # Assuming x_test and y_test are defined and loaded correctly
+            test_loss, test_accuracy = best_model.evaluate(x_test, y_test, verbose=1)
+            logging.info(f"Test Loss: {test_loss}, Test Accuracy: {test_accuracy}")
+        else:
+            logging.error("Model file not found in the models directory. Please train and save the model before evaluation.")
 
 if __name__ == "__main__":
     main()
