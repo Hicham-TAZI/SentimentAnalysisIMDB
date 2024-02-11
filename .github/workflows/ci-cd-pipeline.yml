@@ -5,6 +5,10 @@ on:
     branches:
       - Master
       - Develop
+  push:
+    branches:
+      - Master
+      - Develop
 
 jobs:
   build-and-test:
