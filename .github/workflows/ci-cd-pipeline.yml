@@ -13,23 +13,17 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        python-version: [3.8, 3.9]  # Adjust as needed for your project
-
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python 3.9
       uses: actions/setup-python@v2
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: '3.9'
 
-    # Optional: Add a step to print the contents of requirements.txt for debugging
     - name: Print requirements.txt
       run: cat requirements.txt
 
-    # Update the cache key by appending a version number to force cache refresh if needed
     - name: Cache Python packages
       uses: actions/cache@v2
       with:
@@ -46,5 +40,3 @@ jobs:
     - name: Run tests
       run: |
         pytest tests/
-
-    # Optional: Additional steps such as linting, other tests, or deployment can be added here
