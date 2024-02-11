@@ -1,23 +1,50 @@
-name: CI/CD Pipeline
+name: Python CI/CD Pipeline
 
 on:
+  pull_request:
+    branches:
+      - develop
   push:
     branches:
       - develop
       - master
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9]  # Adjust as needed for your project
+
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python
+
+    - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
-        python-version: '3.9'
+        python-version: ${{ matrix.python-version }}
+
+    # Optional: Add a step to print the contents of requirements.txt for debugging
+    - name: Print requirements.txt
+      run: cat requirements.txt
+
+    # Update the cache key by appending a version number to force cache refresh if needed
+    - name: Cache Python packages
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}-v2
+        restore-keys: |
+          ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}-v2
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pip install -r requirements.txt
+
     - name: Run tests
-      run: pytest
+      run: |
+        pytest tests/
+
+    # Optional: Additional steps such as linting, other tests, or deployment can be added here
