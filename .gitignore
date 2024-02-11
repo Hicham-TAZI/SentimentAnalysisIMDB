@@ -1,0 +1,5 @@
+env/
+__pycache__/
+.DS_Store  # For macOS users
+*.pyc
+best_model.h5

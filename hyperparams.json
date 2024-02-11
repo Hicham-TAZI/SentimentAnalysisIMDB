@@ -1,0 +1,12 @@
+{
+    "param_grid": {
+      "model_type": ["LSTM", "GRU"],
+      "units": [64, 128],
+      "dropout_rate": [0.2, 0.5],
+      "learning_rate": [0.001, 0.0001],
+      "embedding_dim": [100, 200],
+      "batch_size": [64, 128],
+      "epochs": [5, 10]
+    }
+  }
+  
